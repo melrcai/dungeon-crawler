@@ -15,7 +15,7 @@ struct Player {
 };
 
 void initializeMap(char map[][COLS]);
-void displayMap(char map[][COLS], struct Player p);
+void displayMap(char map[][COLS], struct Player p, int exitX, int exitY);
 
 int main() {
     
@@ -23,11 +23,12 @@ int main() {
     char map[ROWS][COLS];
     bool isRunning = true;
     char keyInput;
+    int exitX = 8; int exitY = 8;
 
     initializeMap(map);
 
     while (isRunning) {
-      displayMap(map, p);
+      displayMap(map, p, exitX, exitY);
       cout << "Enter a move (W/A/S/D): ";
       cin >> keyInput;
 
@@ -75,11 +76,14 @@ void initializeMap(char map[][COLS]) {
   }
 }
 
-void displayMap(char map[][COLS], struct Player p) {
+void displayMap(char map[][COLS], struct Player p, int exitX, int exitY) {
   for (int i = 0; i < ROWS; i++) { // !rows = Y axis
     for (int j = 0; j < COLS; j++) { // !columns = X axis 
+      
       if (i == p.y && j == p.x) {
         cout << "P";
+      } else if (i == exitY && j == exitX) {
+        cout << "X";
       }
       else {
         cout << map[i][j];
