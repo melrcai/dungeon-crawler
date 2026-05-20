@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -28,6 +29,7 @@ int main() {
     initializeMap(map);
 
     while (isRunning) {
+      system("cls");
       displayMap(map, p, exitX, exitY);
       cout << "Enter a move (W/A/S/D): ";
       cin >> keyInput;
@@ -35,22 +37,22 @@ int main() {
       // positioning of P
       switch (keyInput) {
       case 'W': case 'w':
-        if (p.y > 0) {
+        if (p.y > 0 && map[p.y - 1][p.x] != '#') {
           p.y--;
         }
         break;
       case 'S': case 's':
-        if (p.y < ROWS - 1) {
+        if (p.y < ROWS - 1 && map[p.y + 1][p.x] != '#') {
           p.y++;
         }
         break;
       case 'A': case 'a':
-        if (p.x > 0) {
+        if (p.x > 0 && map[p.y][p.x - 1] != '#' ) {
           p.x--;
         }
         break;
       case 'D': case 'd':
-        if (p.x < COLS - 1) {
+        if (p.x < COLS - 1 && map[p.y][p.x + 1] != '#') {
           p.x++;
         }
         break;
@@ -62,8 +64,12 @@ int main() {
         cout << "Notice: Press valid key (W/A/S/D/Q) | Q = Exit\n";
         break;
       }
+
+      if (p.y == exitY && p.x == exitX) {
+        cout << "You damn lucky! you escaped the dungeon!\n";
+        isRunning = false; 
+      }
     }
-    
 
     return 0;
 }
@@ -73,6 +79,14 @@ void initializeMap(char map[][COLS]) {
     for (int j = 0; j < COLS; j++) { // !columns = X axis 
       map[i][j] = '.';
     }
+  }
+  for (int j = 0; j < COLS; j++) {
+    map[0][j] = '#';
+    map[ROWS - 1][j] = '#';
+  }
+  for (int i = 0; i < ROWS; i++) {
+    map[i][0] = '#';
+    map[i][COLS - 1] = '#';
   }
 }
 
