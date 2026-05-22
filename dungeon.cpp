@@ -15,7 +15,7 @@ struct Player {
   int health;
 };
 
-void initializeMap(char map[][COLS]);
+void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY);
 void displayMap(char map[][COLS], struct Player p, int exitX, int exitY);
 
 int main() {
@@ -26,7 +26,7 @@ int main() {
     char keyInput;
     int exitX = 8; int exitY = 8;
 
-    initializeMap(map);
+    initializeMap(map, p, exitX, exitY);
 
     while (isRunning) {
       system("cls");
@@ -74,32 +74,52 @@ int main() {
     return 0;
 }
 
-void initializeMap(char map[][COLS]) {
+void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY) {
   for (int i = 0; i < ROWS; i++) { // !rows = Y axis
     for (int j = 0; j < COLS; j++) { // !columns = X axis 
       map[i][j] = '.';
     }
   }
+
+  map[2][2] = 'P';
+  map[4][5] = 'X';
+
+  // ceiling and floor
   for (int j = 0; j < COLS; j++) {
     map[0][j] = '#';
     map[ROWS - 1][j] = '#';
   }
+
+  // left and right walls
   for (int i = 0; i < ROWS; i++) {
     map[i][0] = '#';
     map[i][COLS - 1] = '#';
   }
+ 
+  for (int i = 0; i < ROWS; i++) {
+    for (int j = 0; j < COLS; j++) {
+      if (map[i][j] == 'P') {
+        p.y = i;
+        p.x = j;
+        map[i][j] = '.';
+      }
+
+      if (map[i][j] == 'X') {
+        exitY = i;
+        exitX = j;
+      }
+    }
+  }
+  
 }
 
 void displayMap(char map[][COLS], struct Player p, int exitX, int exitY) {
-  for (int i = 0; i < ROWS; i++) { // !rows = Y axis
-    for (int j = 0; j < COLS; j++) { // !columns = X axis 
+  for (int i = 0; i < ROWS; i++) {
+    for (int j = 0; j < COLS; j++) {
       
       if (i == p.y && j == p.x) {
-        cout << "P";
-      } else if (i == exitY && j == exitX) {
-        cout << "X";
-      }
-      else {
+        cout << 'P';
+      } else {
         cout << map[i][j];
       }
       
