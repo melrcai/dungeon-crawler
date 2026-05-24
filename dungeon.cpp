@@ -15,7 +15,7 @@ struct Player {
   int health;
 };
 
-void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY);
+void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &totalTreasure);
 void displayMap(char map[][COLS], struct Player p, int exitX, int exitY);
 
 int main() {
@@ -24,9 +24,10 @@ int main() {
     char map[ROWS][COLS];
     bool isRunning = true;
     char keyInput;
-    int exitX = 8; int exitY = 8;
+    int exitX = 0; int exitY = 0;
+    int totalTreasure = 0;  
 
-    initializeMap(map, p, exitX, exitY);
+    initializeMap(map, p, exitX, exitY, totalTreasure);
 
     while (isRunning) {
       system("cls");
@@ -65,16 +66,32 @@ int main() {
         break;
       }
 
+      // coordinate of the player is the same as the coordinate of the treasure chest
+      if (map[p.y][p.x] == '$') {
+        cout << "You found a treasure chest! +10 health\n";
+        p.health += 10;
+        map[p.y][p.x] = '.'; // remove the treasure from the map
+        totalTreasure--;
+        cout << "Cha-ching! You lucky bastard! You picked up a coin!\n";
+      }
+
+      // coordinate of the player is the same as the coordinate of the exit
       if (p.y == exitY && p.x == exitX) {
-        cout << "You damn lucky! you escaped the dungeon!\n";
+        cout << "You damn lucky! you got " << totalTreasure << " treasures! and escaped the dungeon!\n";
         isRunning = false; 
+      } else {
+        cout << "The exit door is locked! You must collect all coins first.\n";
       }
     }
 
     return 0;
 }
 
-void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY) {
+void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &totalTreasure) {
+
+  // to track the total no. of treasure chests in the map
+  totalTreasure = 0;
+  
   for (int i = 0; i < ROWS; i++) { // !rows = Y axis
     for (int j = 0; j < COLS; j++) { // !columns = X axis 
       map[i][j] = '.';
@@ -84,29 +101,39 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY) {
   map[2][2] = 'P';
   map[4][5] = 'X';
 
-  // ceiling and floor
-  for (int j = 0; j < COLS; j++) {
-    map[0][j] = '#';
-    map[ROWS - 1][j] = '#';
-  }
+  // treasure chests
+  map[3][4] = '$';
+  map[6][2] = '$';
+  map[7][8] = '$';
 
   // left and right walls
   for (int i = 0; i < ROWS; i++) {
     map[i][0] = '#';
     map[i][COLS - 1] = '#';
   }
+  // ceiling and floor
+  for (int j = 0; j < COLS; j++) {
+    map[0][j] = '#';
+    map[ROWS - 1][j] = '#';
+  }
  
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
+      // find the player position  
       if (map[i][j] == 'P') {
         p.y = i;
         p.x = j;
-        map[i][j] = '.';
+        map[i][j] = '.'; // need to clear the 'P' from the map 
       }
 
       if (map[i][j] == 'X') {
         exitY = i;
         exitX = j;
+      }
+
+      // count the total number of treasure chests in the map
+      if (map[i][j] == '$') {
+        totalTreasure++;
       }
     }
   }
