@@ -1,5 +1,4 @@
-#include <iostream>
-#include <cstdlib>
+#include <iostream> #include <cstdlib>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -68,22 +67,30 @@ int main() {
 
       // coordinate of the player is the same as the coordinate of the treasure chest
       if (map[p.y][p.x] == '$') {
-        cout << "You found a treasure chest! +10 health\n";
         p.health += 10;
         map[p.y][p.x] = '.'; // remove the treasure from the map
         totalTreasure--;
-        cout << "Cha-ching! You lucky bastard! You picked up a coin!\n";
+        cout << "Cha-ching! You lucky bastard! You found a treasure chest! +10 health\n";
+
+        cin.ignore(1000, '\n');
+        cin.get(); 
       }
 
       // coordinate of the player is the same as the coordinate of the exit
       if (p.y == exitY && p.x == exitX) {
-        cout << "You damn lucky! you got " << totalTreasure << " treasures! and escaped the dungeon!\n";
-        isRunning = false; 
-      } else {
-        cout << "The exit door is locked! You must collect all coins first.\n";
+        if (totalTreasure == 0) {
+            system("cls");
+            displayMap(map, p, exitX, exitY);
+            cout << "You damn lucky! You collected all the treasures and escaped the dungeon!\n";
+            isRunning = false; 
+        } else {
+            cout << "The exit door is locked! You must collect the remaining " << totalTreasure << " coins first!\n";
+            cout << "Press enter to continue...";
+            cin.ignore(1000, '\n');
+            cin.get(); 
+        }
       }
     }
-
     return 0;
 }
 
@@ -98,14 +105,6 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
     }
   }
 
-  map[2][2] = 'P';
-  map[4][5] = 'X';
-
-  // treasure chests
-  map[3][4] = '$';
-  map[6][2] = '$';
-  map[7][8] = '$';
-
   // left and right walls
   for (int i = 0; i < ROWS; i++) {
     map[i][0] = '#';
@@ -117,6 +116,14 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
     map[ROWS - 1][j] = '#';
   }
  
+  map[2][2] = 'P';
+  map[4][5] = 'X';
+
+  // treasure chests
+  map[3][4] = '$';
+  map[6][2] = '$';
+  map[7][8] = '$';
+
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       // find the player position  
@@ -134,7 +141,7 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
       // count the total number of treasure chests in the map
       if (map[i][j] == '$') {
         totalTreasure++;
-      }
+      } 
     }
   }
   
