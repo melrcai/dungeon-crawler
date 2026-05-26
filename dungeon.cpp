@@ -1,4 +1,5 @@
-#include <iostream> #include <cstdlib>
+#include <iostream> 
+#include <cstdlib>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -17,7 +18,7 @@ struct Player {
 void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &totalTreasure);
 void displayMap(char map[][COLS], struct Player p, int exitX, int exitY);
 
-int main() {
+int main() { 
     
     Player p = {1, 1, 100};
     char map[ROWS][COLS];
@@ -31,6 +32,7 @@ int main() {
     while (isRunning) {
       system("cls");
       displayMap(map, p, exitX, exitY);
+      cout << "Health: " << p.health << "\n";
       cout << "Enter a move (W/A/S/D): ";
       cin >> keyInput;
 
@@ -71,6 +73,7 @@ int main() {
         map[p.y][p.x] = '.'; // remove the treasure from the map
         totalTreasure--;
         cout << "Cha-ching! You lucky bastard! You found a treasure chest! +10 health\n";
+        cout << "Health: " << p.health << "\n";
 
         cin.ignore(1000, '\n');
         cin.get(); 
@@ -89,6 +92,13 @@ int main() {
             cin.ignore(1000, '\n');
             cin.get(); 
         }
+      }
+      if (map[p.y][p.x] == 'T') {
+        p.health -= 20;
+        cout << "Ouch! You stepped on a trap! -20 health\n";
+        cout << "Press enter to continue...";
+        cin.ignore(1000, '\n');
+        cin.get(); 
       }
     }
     return 0;
@@ -124,6 +134,11 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
   map[6][2] = '$';
   map[7][8] = '$';
 
+  // traps
+  map[5][3] = 'T';
+  map[4][4] = 'T';
+  map[1][7] = 'T';
+
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       // find the player position  
@@ -142,6 +157,12 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
       if (map[i][j] == '$') {
         totalTreasure++;
       } 
+
+// !      if (map[i][j] == 'T') {
+// !       p.y = i;
+// !       p.x = j;
+// !       map[i][j] = '.'; // remove the trap from the map after triggering it
+// !     } 
     }
   }
   
