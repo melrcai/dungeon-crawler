@@ -63,7 +63,7 @@ int main() {
         isRunning = false;
         break;
       default:
-        cout << "Notice: Press valid key (W/A/S/D/Q) | Q = Exit\n";
+        cout << "Notice: Press valid key (W/A/S/D/Q) | Q = Abandon\n";
         break;
       }
 
@@ -99,6 +99,13 @@ int main() {
         cout << "Press enter to continue...";
         cin.ignore(1000, '\n');
         cin.get(); 
+
+        if (p.health <= 0) {
+          system("cls");
+          displayMap(map, p, exitX, exitY);
+          cout << "Uh oh! You have died you clumsy fool! Better luck next time!\n";
+          isRunning = false;
+        }
       }
     }
     return 0;
@@ -158,11 +165,11 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
         totalTreasure++;
       } 
 
-// !      if (map[i][j] == 'T') {
-// !       p.y = i;
-// !       p.x = j;
+      if (map[i][j] == 'T') {
+       p.y = i;
+       p.x = j;
 // !       map[i][j] = '.'; // remove the trap from the map after triggering it
-// !     } 
+     } 
     }
   }
   
@@ -174,7 +181,9 @@ void displayMap(char map[][COLS], struct Player p, int exitX, int exitY) {
       
       if (i == p.y && j == p.x) {
         cout << 'P';
-      } else {
+      } else if (map[i][j] == 'T') { // hide the trap from the player
+        cout << '.';                 // ! else if (i == 'T' && j == 'T') { cout << '.'; } doesnt work  
+      } else {                       // ? prolly because T is a char and not an int, so it cannot be compared with the coordinates of the player
         cout << map[i][j];
       }
       

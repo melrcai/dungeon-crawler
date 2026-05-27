@@ -1,2 +1,2 @@
 to do:
-hide traps
+why p is in the wrong coordinates?
