@@ -27,6 +27,18 @@ int main() {
     int exitX = 0; int exitY = 0;
     int totalTreasure = 0;  
 
+    cout << "\n=================================================================================\n";
+    cout << "||                                                                             ||\n";
+    cout << "||                     WELCOME TO THE DUNGEON CRAWLER GAME!                    ||\n";
+    cout << "||                                                                             ||\n";
+    cout << "||  Objective: Collect all the treasure chests ($) and escape the dungeon (X). ||\n";
+    cout << "||  Danger: Beware of hidden traps (T)! If your health drops to 0, you lose.   ||\n";
+    cout << "||  Controls: W = Up, A = Left, S = Down, D = Right | Q = Quit                 ||\n";
+    cout << "||                                                                             ||\n";
+    cout << "=================================================================================\n";
+    cout << "\nPress enter to start the game...";
+    cin.get();
+
     initializeMap(map, p, exitX, exitY, totalTreasure);
 
     while (isRunning) {
@@ -64,6 +76,9 @@ int main() {
         break;
       default:
         cout << "Notice: Press valid key (W/A/S/D/Q) | Q = Abandon\n";
+        cout << "Press enter to continue...";
+        cin.ignore(1000, '\n');
+        cin.get();
         break;
       }
 
@@ -75,6 +90,7 @@ int main() {
         cout << "Cha-ching! You lucky bastard! You found a treasure chest! +10 health\n";
         cout << "Health: " << p.health << "\n";
 
+        cout << "Press enter to continue...";
         cin.ignore(1000, '\n');
         cin.get(); 
       }
@@ -93,6 +109,7 @@ int main() {
             cin.get(); 
         }
       }
+
       if (map[p.y][p.x] == 'T') {
         p.health -= 20;
         cout << "Ouch! You stepped on a trap! -20 health\n";
@@ -127,12 +144,14 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
     map[i][0] = '#';
     map[i][COLS - 1] = '#';
   }
+
   // ceiling and floor
   for (int j = 0; j < COLS; j++) {
     map[0][j] = '#';
     map[ROWS - 1][j] = '#';
   }
  
+  // player and exit
   map[2][2] = 'P';
   map[4][5] = 'X';
 
@@ -143,8 +162,14 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
 
   // traps
   map[5][3] = 'T';
+  map[5][5] = 'T';
+  map[4][6] = 'T';
   map[4][4] = 'T';
   map[1][7] = 'T';
+  map[3][3] = 'T';
+  map[2][5] = 'T';
+  map[7][7] = 'T';
+  map[6][8] = 'T';
 
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
@@ -164,12 +189,6 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
       if (map[i][j] == '$') {
         totalTreasure++;
       } 
-
-      if (map[i][j] == 'T') {
-       p.y = i;
-       p.x = j;
-// !       map[i][j] = '.'; // remove the trap from the map after triggering it
-     } 
     }
   }
   
@@ -178,7 +197,6 @@ void initializeMap(char map[][COLS], Player &p, int &exitX, int &exitY, int &tot
 void displayMap(char map[][COLS], struct Player p, int exitX, int exitY) {
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
-      
       if (i == p.y && j == p.x) {
         cout << 'P';
       } else if (map[i][j] == 'T') { // hide the trap from the player
@@ -186,7 +204,6 @@ void displayMap(char map[][COLS], struct Player p, int exitX, int exitY) {
       } else {                       // ? prolly because T is a char and not an int, so it cannot be compared with the coordinates of the player
         cout << map[i][j];
       }
-      
     }
     cout << "\n";
   }
